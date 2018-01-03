@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form.io Form Builder</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="https://cdn.rawgit.com/odra/ng-json-explorer/master/dist/angular-json-explorer.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/bootswatch@3.3.7/yeti/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="http://formio.github.io/ngFormBuilder/dist/ngFormBuilder-full.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />  
+  <link rel="stylesheet" href="css/jkstarrating.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/angucomplete-alt.css" />
+  <link rel="stylesheet" href="bower_components/ng1UserPanel/src/css/userpicker.css" />
+</head>
+<body>
+<!-- BROWSE HAPPY BEGINS HERE -->
+<style>
+  .browsehappy {
+    display:block;
+    width:100%;
+    height:100px;
+    background-color:#f2dede;
+    margin: 0 0 10px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 22px;
+    line-height: 1.4;
+    color: #333;
+    padding-top: 15px;
+    vertical-align:middle;
+  }
+  .browsehappy span {
+    vertical-align:middle;
+    margin:20px 20px 20px 20px;
+    background:url("https://cdn.rawgit.com/alrra/browser-logos/master/internet-explorer/internet-explorer_64x64.png") no-repeat;
+    height:64px;
+    width:64px;
+    display:inline-block;
+  }
+
+  .formbuilder {
+    height: 600px;
+  }
+
+  .formcomponents {
+    width: 30%;
+  }
+
+  .formarea {
+    width: 70%;
+  }
+
+  .component-settings .nav-link {
+    font-size: 0.6em;
+  }
+
+  .jsonviewer {
+    max-height: 600px;
+    overflow: scroll;
+  }
+
+  .form-type-select {
+    display: inline-block;
+    width: 100px;
+    height: 28px;
+    vertical-align: top;
+  }
+</style>
+<!--[if IE 6]><p class="browsehappy"><img />You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
+<!--[if IE 7]><p class="browsehappy"><img src="https://cdn.rawgit.com/alrra/browser-logos/master/internet-explorer/internet-explorer_64x64.png" />You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
+<!--[if IE 8]><p class="browsehappy"><img src="https://cdn.rawgit.com/alrra/browser-logos/master/internet-explorer/internet-explorer_64x64.png" />You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
+<!--[if IE 9]><p class="browsehappy"><img src="https://cdn.rawgit.com/alrra/browser-logos/master/internet-explorer/internet-explorer_64x64.png" />You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
+<!-- BROWSE HAPPY ENDS HERE -->
+<div class="page-content" ng-controller="formBuilderCtrl">
+  <div class="container-fluid">
+    <div>
+      <div class="row">
+      <!-- <span copy-text>Text To Copy</span> -->
+      {{viewmode="medium";""}}
+
+        <div user type="picker" user-model="usermodel1" view-type="viewmode" user-id="userid1" 
+        user-email="useremail1" switch-mode="mode" user-type="employee"></div>
+        <div class="col-sm-8">
+          <h3 class="text-center text-muted">The <a href="https://github.com/formio/ngFormBuilder" target="_blank">Form Builder</a> allows you to build a <select class="form-control form-type-select" ng-model="form.display" style="height: 35px;" ng-options="display.name as display.title for display in displays"></select></h3>
+          <pre class="text-center bg-info"><h4><code>&lt;form-builder form="form"&gt;&lt;/form-builder&gt;</code></h4></pre>
+          <pre class="text-center"><h4>Enter Form Name - <input type="text" name="formname" ng-model="formname"></h4></pre>
+          <div class="well" style="background-color: #fdfdfd;">
+            <form-builder form="form"></form-builder>
+            <span style="padding-left: 78%"></span>
+            <button class="btn btn-success"  ng-click="saveForm(form,formname)">Save Form</button>
+            <button class="btn btn-danger" ng-click="saveForm(form)">Cancel Form</button>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <h3 class="text-center text-muted">as JSON Schema</h3>
+          <pre class="bg-info"><h4><code>$scope.form = </code></h4></pre>
+          <div class="well jsonviewer">
+
+            <json-explorer data="form" collapsed="jsonCollapsed"></json-explorer>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+          <div class="well">
+            <h3>List of Forms Created By Form Builder</h3>
+            <table id="datatable" class="table table-striped table-condensed table-hover">
+              <thead class="data-grid-header">
+                <tr  class="coltitle">
+                <th>Form Name</th>
+               </tr>
+             </thead>
+             <tbody class="data-grid-data">
+                <tr  class="coltitle" ng-repeat = "formtd in list">
+                <td>{{formtd.formname}}</td>
+                <td id="step4">
+                    <a class="table-btn" ng-click="loadForm(formtd)" style="cursor: pointer;"><span class="fa fa-edit fa-lg" />View Form</a>
+                </td>
+               </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+          <h3 class="text-center text-muted">which <a href="https://github.com/formio/ngFormio" target="_blank">Renders as a Form</a> in your Application</h3>
+          <pre class="text-center bg-info"><h4><code>&lt;formio form="form"&gt;&lt;/formio&gt;</code></h4>,{{formname}}</pre>
+          <div class="well">
+            <formio form="form" ng-if="renderForm" submission="submission"></formio>
+          </div>
+          {{submission}} 
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="row" ng-if="listFormResponses.length!=0">
+        <div class="col-sm-8 col-sm-offset-2">
+          <div class="well">
+          <h3>List of Forms Responses for a Form</h3>
+            <table id="datatable" class="table table-striped table-condensed table-hover">
+              <thead class="data-grid-header">
+                <tr  class="coltitle">
+                <th>Form Name</th>
+               </tr>
+             </thead>
+             <tbody class="data-grid-data">
+                <tr  class="coltitle" ng-repeat = "formtd in listFormResponses track by $index">
+                <td>{{formtd.formname}} Response {{$index}}</td>
+                <td id="step4">
+                  <a class="table-btn" ng-click="showFormData(formtd)" style="cursor: pointer;"><span class="fa fa-edit fa-lg" />See Form Response</a>
+                </td>
+               </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>      
+    </div>
+  </div>
+</div>
+<!-- <script src="js/angular.min.js"></script> -->
+<!-- <script src="js/angular-sanitize.min.js"></script> -->
+<script src="js/ckeditor.js"></script>
+<script src="js/ckeditor.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/signature_pad.min.js"></script>
+<script src="http://formio.github.io/ngFormBuilder/dist/ngFormBuilder-full.js"></script>
+<!-- <script src="https://npmcdn.com/ng-formio-builder@1.12.13/dist/ngFormBuilder-complete.js"></script> -->
+<script src="js/lodash.min.js"></script>
+<script src="js/angular-json-explorer.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.css" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="js/jkstarrating.min.js"></script>
+<script src="js/angucomplete-alt.js"></script>
+<script src="formbuilder.js">
+
+</script>
+<!-- <script type="text/javascript" src="bower_components/ng1CopyText/dist/ng1CopyText.js"></script> -->
+<script type="text/javascript" src="bower_components/ng1UserPanel/dist/ng1UserPanel.js"></script>
+<!-- <script src="fivestar.builder.js">
+</script>
+<script src="fivestar.render.js">
+</script> -->
+</body>
+</html>
